@@ -48,12 +48,20 @@ function drawStars(ctx, dusk) {
 }
 
 function drawHills(ctx, camX, dusk) {
-  const off = (camX * 0.05) % 3000;
+  // Hills are indexed by WORLD segment, like the pines and fences:
+  // each segment's peak height is hashed from its integer index, so a
+  // hill keeps its shape and only translates as the world scrolls.
+  // (Hashing the screen-space x instead made every peak re-roll its
+  // height each frame — the range visibly trembled.)
+  const seg = 400;
+  const scroll = camX * 0.05;
+  const first = Math.floor(scroll / seg) - 1;
   ctx.fillStyle = mixHex("#3a2140", "#160b20", dusk);
   ctx.beginPath();
-  ctx.moveTo(-off, GROUND_Y);
-  for (let x = -off; x < VIEW_W + 400; x += 400) {
-    ctx.quadraticCurveTo(x + 200, GROUND_Y - 190 - hash01(x) * 60, x + 400, GROUND_Y - 40);
+  ctx.moveTo(first * seg - scroll, GROUND_Y);
+  for (let i = first; i * seg - scroll < VIEW_W + seg; i++) {
+    const x = i * seg - scroll;
+    ctx.quadraticCurveTo(x + 200, GROUND_Y - 190 - hash01(i * 7 + 3) * 60, x + seg, GROUND_Y - 40);
   }
   ctx.lineTo(VIEW_W, GROUND_Y);
   ctx.closePath();
