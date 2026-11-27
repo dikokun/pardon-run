@@ -41,7 +41,7 @@ export function turkeyBox(t) {
 }
 
 export function turkeySpeedFactor(t) {
-  if (t.stumbleTime > 0) return 0.55;
+  if (t.stumbleTime > 0) return 0.72;
   if (t.dashTime > 0) return 1.7;
   return 1;
 }

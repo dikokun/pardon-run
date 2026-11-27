@@ -12,7 +12,7 @@ const MAX_GAP = 470;
 
 export function createFarmer() {
   return {
-    gap: 300,          // px behind the turkey
+    gap: 340,          // px behind the turkey
     runPhase: 0,
     grabLunge: 0,      // 0..1 reach animation when very close
     visible: true,
@@ -25,15 +25,18 @@ export function farmerX(f) {
 
 // relSpeed: how much faster than the world the turkey is moving
 // (dash/turbo positive, stumble negative). The farmer matches the
-// world's scroll and claws back a little ground every second.
-export function updateFarmer(f, dt, relSpeed) {
+// world's scroll; clean running wins real ground back (16 px/s plus a
+// slice of base speed), so one stumble is recoverable in a few clean
+// seconds while repeated stumbles still bury the turkey.
+export function updateFarmer(f, dt, relSpeed, baseSpeed = 330) {
   f.runPhase += dt * 11;
-  f.gap = clamp(f.gap + relSpeed * dt * 0.92 + 5.5 * dt, 0, MAX_GAP);
+  const recovery = 16 + baseSpeed * 0.01;
+  f.gap = clamp(f.gap + relSpeed * dt * 0.92 + recovery * dt, 0, MAX_GAP);
   f.grabLunge = f.gap < 120 ? Math.min(1, f.grabLunge + dt * 3) : Math.max(0, f.grabLunge - dt * 2);
 }
 
 export function farmerGainOnStumble(f) {
-  f.gap = Math.max(0, f.gap * 0.8 - 12);
+  f.gap = Math.max(0, f.gap * 0.88 - 6);
 }
 
 export function farmerPushedByDash(f) {

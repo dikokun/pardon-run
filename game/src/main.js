@@ -156,7 +156,7 @@ function updateRun(dt) {
   s.multiplier = 1 + Math.min(s.combo * 0.1, 2);
   s.bestCombo = Math.max(s.bestCombo, s.combo);
 
-  updateFarmer(s.farmer, dt, (factor - 1) * baseSpeed);
+  updateFarmer(s.farmer, dt, (factor - 1) * baseSpeed, baseSpeed);
   s.farmerDanger = farmerDanger(s.farmer);
 
   spawnObstacles(s.obSpawner, s.camX, s.distanceM, s.obstacles);
